@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+ 
+  "name": "Azure Portal Presentation Mode",
+  "short_name": "Azure Presentation Mode",
+  "version": "1.0.1",
+  "description": "Obscures data from the Microsoft Azure Portal, for demos and presentations",
+  "author": "Anthony Turner",
+  "homepage_url": "http://www.anthturner.com",
+  "icons": {"128":"icons/cloud128.png"},
+ 
+  "content_scripts": [{
+    "js": ["jquery-3.1.1.slim.min.js", "content.js"],
+    "matches": ["https://portal.azure.com/*","https://*.portal.azure.com/*"]
+  }],
+  
+  "permissions": [ "tabs", "storage", "webNavigation", "https://portal.azure.com/*", "https://*.portal.azure.com/*" ],
+  
+  "browser_action": {
+	"default_icon": "icons/cloud128.png",
+	"default_popup": "popup.html"
+  },
+  
+  "background": {
+	"scripts": ["background.js"]
+  }
+}
