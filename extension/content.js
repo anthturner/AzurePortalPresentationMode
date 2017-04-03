@@ -15,6 +15,12 @@ var possibleMutations = [
 	callback: function(selector) { selector.hide(); }
 },
 {
+	name: "Remove Resource IDs (by msportalfx-text-label location)",
+	selectorString: "$(\"div.msportalfx-text-label:contains('Resource ID')\").next().find('input')",
+	observes: {characterData:true, childList:true},
+	callback: function(selector) { selector.hide(); }
+},
+{
 	name: "Hide User Header Tooltip",
 	selectorString: "$('div.fxs-avatarmenu-header')",
 	observes: {attributes: true},
