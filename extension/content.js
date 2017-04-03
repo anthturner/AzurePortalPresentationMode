@@ -74,60 +74,6 @@ function registerMutations()
 	for (i = 0; i < possibleMutations.length; i++) { 
 		registerMutation(possibleMutations[i]);
 	}
-	return;
-	
-	
-	// Add mutations
-	// {attributes: true, childList:true, characterData:true, subtree:true}
-	if (!isMutationValid("Remove Subscription IDs"))
-	{
-		registerMutation({
-			name: "Remove Subscription IDs",
-			selector: $("div.msportalfx-property-label-wrapper").find("label:contains('Subscription ID')").parent().next().children().first(),
-			observes: {characterData:true},
-			callback: function(selector) { selector.hide(); }
-		});
-	}
-	
-	if (!isMutationValid("Remove Resource IDs"))
-	{
-		registerMutation({
-			name: "Remove Resource IDs",
-			selector: $("div.msportalfx-property-label-wrapper").find("label:contains('Resource ID')").parent().next().children().first(),
-			observes: {characterData:true, childList:true},
-			callback: function(selector) { selector.hide(); }
-		});
-	}
-	
-	if (!isMutationValid("Hide User Header Tooltip"))
-	{
-		registerMutation({
-			name: "Hide User Header Tooltip",
-			selector: $("div.fxs-avatarmenu-header"),
-			observes: {attributes: true},
-			callback: function(selector) { selector.prop('title', ''); }
-		});
-	}
-
-	if (!isMutationValid("Hide Username"))
-	{
-		registerMutation({
-			name: "Hide Username",
-			selector: $("div.fxs-avatarmenu-username"),
-			observes: {characterData: true},
-			callback: function(selector) { selector.text(""); }
-		});
-	}
-	
-	if (!isMutationValid("Remove Subscription IDs (VMs)"))
-	{
-		registerMutation({
-			name: "Remove Subscription IDs (VMs)",
-			selector: $("div.fxc-essentials-label-container").find("label:contains('Subscription ID')").parent().next().children().first(),
-			observes: {characterData:true},
-			callback: function(selector) { selector.hide(); }
-		});
-	}
 }
 
 // Check that mutation's DOM selector is still valid
