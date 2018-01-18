@@ -2,8 +2,8 @@ $(document).ready(function () {
 	$('.onoffswitch-inner').addClass('notransition');
 	$('.onoffswitch-switch').addClass('notransition');
 
-	chrome.runtime.sendMessage({isRunning:"?"}, function(response) {
-		$('#azObscureRunning').prop('checked', response.isRunning);
+	chrome.runtime.sendMessage({running:"?"}, function(response) {
+		$('#azObscureRunning').prop('checked', response.running);
 		setTimeout(function () {
 			$('.onoffswitch-inner').removeClass('notransition');
 			$('.onoffswitch-switch').removeClass('notransition');

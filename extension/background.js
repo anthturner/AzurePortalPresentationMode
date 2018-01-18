@@ -16,26 +16,26 @@ chrome.tabs.query({}, function(tabs) {
 
 // Message bus listener
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-	// Command changes running state
 	if (typeof request.running != 'undefined') {
-		setAzureRunning(request.running);
-		
-		sendResponse({isRunning: request.running});
-		chrome.tabs.query({}, function(tabs) {
-			for (var i = 0; i < tabs.length; i++) {
-				setIcon(tabs[i]);
-				chrome.tabs.sendMessage(tabs[i].id, {isRunning: request.running});
-			}
-		});
+		if (request.running == "?") {
+			isAzureRunning(function (state) {
+				sendResponse({running: state});
+			});
+		}
+		else {
+			setAzureRunning(request.running);
+			
+			sendResponse({running: request.running});
+			chrome.tabs.query({}, function(tabs) {
+				for (var i = 0; i < tabs.length; i++) {
+					setIcon(tabs[i]);
+					chrome.tabs.sendMessage(tabs[i].id, {running: request.running});
+				}
+				return true;
+			});
+		}
 	}
-	
-	// Command requests running state
-	if (typeof request.isRunning != 'undefined') {
-		isAzureRunning(function (state) {
-			sendResponse({isRunning: state});
-		});
-		return true; // prevent sendResponse from becoming invalid
-	}
+	return true;
 });
 
 // Icon management
@@ -56,11 +56,14 @@ function setIcon(tab)
 // Configuration accessor/mutator functions
 function isAzureRunning(callback)
 {
-	chrome.storage.local.get('azObscure.running', function(items) {
-		callback(items["azObscure.running"]);
+	chrome.storage.local.get('appm.running', function(items) {
+		var result = items["appm.running"];
+		if (result === undefined) { result = false; }
+		callback(result);
+		return true;
 	});
 }
 function setAzureRunning(value)
 {
-	chrome.storage.local.set({'azObscure.running': value});
+	chrome.storage.local.set({'appm.running': value});
 }
