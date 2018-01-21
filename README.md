@@ -1,13 +1,13 @@
 # Azure Portal Presentation Mode
 APPM is a Chrome extension that strips sensitive information from the new Microsoft Azure portal (https://portal.azure.com). This is most useful for individuals doing public presentations or videos on material associated with the portal who do not wish to disclose private details about their subscription or resources.
 
-The following data is intended to be stripped from the portal as of 4/3/2017:
+The following data is intended to be stripped from the portal as of 1/20/2018:
 - Subscription IDs from resource pages
 - Resource IDs from resource pages
 - Tooltip in user header that discloses Directory ID
 - Username from user header
 
-Additional data can be stripped by adding a mutation to content.js in the following style:
+Additional data can be stripped by adding a mutation to appm_obfuscations.js in the following style:
 
 ```javascript
 {
