@@ -2,57 +2,106 @@ body,html
 {
 	padding: 0;
 	margin: 0;
-	background-color: #ccc;
+    background-color: #ccc;
+    width: 200px;
 }
 
-.onoffswitch {
-    position: relative; width: 90px;
-    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
-	margin: 5px;
-}
-.onoffswitch-checkbox {
-    display: none;
-}
-.onoffswitch-label {
-    display: block; overflow: hidden; cursor: pointer;
-    border: 2px solid #999999; border-radius: 0px;
-}
-.onoffswitch-inner {
-    display: block; width: 200%; margin-left: -100%;
-    transition: margin 0.3s ease-in 0s;
-}
-.onoffswitch-inner:before, .onoffswitch-inner:after {
-    display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 26px;
-    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
-    box-sizing: border-box;
-    border: 2px solid transparent;
-    background-clip: padding-box;
-}
-.onoffswitch-inner:before {
-    content: "On";
-    padding-left: 10px;
-    background-color: #2E8DEF; color: #FFFFFF;
-}
-.onoffswitch-inner:after {
-    content: "Off";
-    padding-right: 10px;
-    background-color: #CCCCCC; color: #333333;
-    text-align: right;
-}
-.onoffswitch-switch {
-    display: block; width: 25px; margin: 0px;
-    background: #000000;
-    position: absolute; top: 0; bottom: 0;
-    right: 65px;
-    transition: all 0.3s ease-in 0s; 
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
-    margin-left: 0;
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-    right: 0px; 
-}
-.notransition
+#appm_logo
 {
-	transition: none !important;
+    margin: 0 auto;
+    padding-top: 3px;
+    padding-bottom: 5px;
+    text-align: center;
+    background-color: #eee;
+    border-bottom: 3px solid #6796B0;
+}
+
+#appm_switchPanel
+{
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background-color: #aaa;
+    border-bottom: 3px solid #6796B0;
+}
+#appm_switchPanel h3 {
+    position: relative;
+    bottom: 7px;
+    left: 20px;
+    margin-bottom: 2px;
+    display: inline-block;
+}
+
+ul#obfuscations {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+ul#obfuscations li {
+    border-bottom: 1px solid #6796B0;
+    padding: 5px;
+    font-family: sans-serif;
+    font-size: 8pt;
+}
+ul#obfuscations li { background-color: #ccaaaa; }
+ul#obfuscations li a:before { content: '\2718  '; }
+ul#obfuscations li.isEnabled { background-color: #aaccaa; }
+ul#obfuscations li.isEnabled a:before { content: '\2714  ' !important; }
+ul#obfuscations li a {
+    color: #000;
+    text-decoration: none;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 18px;
+    bottom: 2px;
+    left: 40px;
+    border: 1px solid #999;
+}
+
+.switch input {display:none;}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 13px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(13px);
+    -ms-transform: translateX(13px);
+    transform: translateX(px);
+}
+.notransition, .notransition:before
+{
+    transition: none !important;
+    -webkit-transition: none !important;
 }

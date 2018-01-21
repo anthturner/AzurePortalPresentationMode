@@ -6,11 +6,11 @@
   "version": "1.0.1",
   "description": "Obscures data from the Microsoft Azure Portal, for demos and presentations",
   "author": "Anthony Turner",
-  "homepage_url": "http://www.anthturner.com",
+  "homepage_url": "http://www.github.com/anthturner/AzurePortalPresentationMode",
   "icons": {"128":"icons/cloud128.png"},
  
   "content_scripts": [{
-    "js": ["jquery-3.1.1.slim.min.js", "content.js"],
+    "js": ["jquery-3.1.1.slim.min.js", "messaging.js", "appm_obfuscations.js", "content.js"],
     "matches": ["https://portal.azure.com/*","https://*.portal.azure.com/*"]
   }],
   
@@ -22,6 +22,6 @@
   },
   
   "background": {
-	"scripts": ["background.js"]
+	"scripts": ["jquery-3.1.1.slim.min.js", "messaging.js", "appm_obfuscations.js", "background.js"]
   }
 }

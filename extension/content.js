@@ -1,50 +1,39 @@
 const APPM_BACKOFF_TIME = 100; // 0.1s
-
-var possibleObfuscations = [
-{
-	name: "Hide User Header Tooltip",
-	selectorString: "div.fxs-avatarmenu *[title]:not([title=\"\"])",
-	callback: function(selector) { $(selector).hover(function(){ $(selector).removeAttr("title"); }); }
-},
-{
-	name: "Hide Username",
-	selectorString: "div.fxs-avatarmenu-username",
-	callback: function(selector) { selector.text(""); }
-},
-{
-	name: "Remove Resource IDs (by fxc container)",
-	selectorString: ".fxc-essentials-label-container label:contains(\"Resource ID\"),label:contains(\"Resource Id\"),label:contains(\"Resource id\")",
-	callback: function(selector) { selector.closest('.fxc-essentials-item').children('div:not(.fxc-essentials-label-container)').hide(); }
-},
-{
-	name: "Remove Resource IDs (by msportalfx-property)",
-	selectorString: ".msportalfx-property label:contains(\"Resource ID\"),label:contains(\"Resource Id\"),label:contains(\"Resource id\")",
-	callback: function(selector) { selector.closest('.msportalfx-property').children('div:not(.msportalfx-property-label-wrapper)').hide(); }
-},
-{
-	name: "Remove Subscription IDs (by fxc container)",
-	selectorString: ".fxc-essentials-label-container label:contains(\"Subscription ID\"),label:contains(\"Subscription Id\"),label:contains(\"Subscription id\")",
-	callback: function(selector) { selector.closest('.fxc-essentials-item').children('div:not(.fxc-essentials-label-container)').hide(); }
-},
-{
-	name: "Remove Subscription IDs (by msportalfx-property)",
-	selectorString: ".msportalfx-property label:contains(\"Subscription ID\"),label:contains(\"Subscription Id\"),label:contains(\"Subscription id\")",
-	callback: function(selector) { selector.closest('.msportalfx-property').children('div:not(.msportalfx-property-label-wrapper)').hide(); }
-}
-
-];
-
-// ----------------------------------------------------------------------------------------------
 var possibleObfuscationObjects = [];
 var bodyObserver;
 
+function updateRunningState()
+{
+	AppmBrowserHelper.getPersistent('appm.running', false, function(isRunning) {
+		if (isRunning === true) {
+			console.log("Azure Portal Presentation Mode is hiding sensitive information from your portal instance.");
+			for (var i = 0; i < possibleObfuscationObjects.length; i++) {
+				possibleObfuscationObjects[i].obfuscateAll();
+			}
+		}
+	});
+}
+
+function updateObfuscations()
+{
+	AppmBrowserHelper.getPersistent('appm.obfuscations', [], function(obfuscations) {
+		possibleObfuscationObjects = [];
+
+		for (var i = 0; i < obfuscations.length; i++) {
+			possibleObfuscationObjects.push(new APPMObfuscation(obfuscations[i]))
+		}
+
+		updateRunningState();
+	});
+}
+
+var statusBridge = new MessagingBridge("status", "tab", function () { updateRunningState() });
+var obfuscationsBridge = new MessagingBridge("obfuscations", "tab", function () { updateObfuscations(); });
+
 $(document).ready(function () {
 	MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-	
-	possibleObfuscationObjects = [];
-	for (var i = 0; i < possibleObfuscations.length; i++) {
-		possibleObfuscationObjects.push(new APPMObfuscation(possibleObfuscations[i]));
-	}
+
+	updateObfuscations();
 
 	bodyObserver = new MutationObserver(function(mutationsList, observer) { 
 		for (var i = 0; i < mutationsList.length; i++) {
@@ -56,12 +45,23 @@ $(document).ready(function () {
 		}
 	});
 	bodyObserver.observe($('body')[0], {attributes: true, childList:true, characterData:true, subtree:true});
+	
+	// Get current running state and run filtering if needed
+	updateRunningState();
 });
 
 class APPMObfuscation {
 	constructor(definition) {
 		this.definition = definition;
 		this.active = false;
+	}
+
+	executeLinkedCallback(targetJqElement) {
+		var parent = this;
+		var target = $.grep(possibleObfuscations, function(o) { return parent.definition.name === o.name; });
+		if (target.length > 0) {
+			target[0].callback(targetJqElement)
+		}
 	}
 
 	obfuscateAll() {
@@ -77,33 +77,16 @@ class APPMObfuscation {
 	}
 
 	obfuscate(targetJqElement) {
-		if (!this.active) {
+		if (!this.active && this.definition.enabled === true) {
 			var obfuscation = this;
-			chrome.runtime.sendMessage({running: "?"}, function(response) {
-				if (response.running === true && !obfuscation.active) {
+			AppmBrowserHelper.getPersistent('appm.running', false, function(isRunning) {
+				if (isRunning === true && obfuscation.active === false) {
 					obfuscation.active = true;
 					console.log("Firing update for " + obfuscation.definition.name)
-					obfuscation.definition.callback(targetJqElement);
+					obfuscation.executeLinkedCallback(targetJqElement);
 					obfuscation.active = false;
 				}
 			});
 		}
 	}
 }
-
-// Listen for information from the message bus
-chrome.runtime.onMessage.addListener(
-	function(request, sender, sendResponse) {
-		if (request.running !== null) {
-			if (request.running)
-			{
-				console.log("Azure Portal Presentation Mode is hiding sensitive information from your portal instance.");
-
-				for (var i = 0; i < possibleObfuscationObjects.length; i++) {
-					possibleObfuscationObjects[i].obfuscateAll();
-				}
-			}
-			
-			// todo: refresh portal tabs
-		}
-});
