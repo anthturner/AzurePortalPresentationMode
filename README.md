@@ -12,8 +12,7 @@ Additional data can be stripped by adding a mutation to content.js in the follow
 ```javascript
 {
 	name: "Some Descriptive Name of What This Does",
-	selectorString: "string evaluating to a jquery selector pointing to the element that is watched for changes and subsequently passed into the callback",
-	observes: {attributes: true, childList:true, characterData:true, subtree:true}, // Pick any subset of these as configuration to the MutationObserver. Chrome follows W3 standard for MutationObservers, which can be found at https://www.w3.org/TR/dom/#mutation-observers
+	selectorString: "string representing a jquery selector pointing to the element that is watched for changes and subsequently passed into the callback",
 	callback: function(selector) { selector.hide(); } // Perform mutation here, the selector will be the result of selectorString, above
 },
 ```
