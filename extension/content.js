@@ -1,4 +1,5 @@
 var possibleObfuscationObjects = [];
+var appmIsRunning = false;
 var bodyObserver;
 
 function updateRunningState()
@@ -34,11 +35,17 @@ $(document).ready(function () {
 
 	updateObfuscations();
 
+	setInterval(function() { 
+		AppmBrowserHelper.getPersistent('appm.running', false, function(isRunning) {
+			appmIsRunning = isRunning;
+		});
+	}, 100);
+
 	bodyObserver = new MutationObserver(function(mutationsList, observer) { 
-		for (var i = 0; i < mutationsList.length; i++) {
-			for (var j = 0; j < possibleObfuscationObjects.length; j++) {
-				if (possibleObfuscationObjects[j].canObfuscate($(mutationsList[i].target))) {
-					possibleObfuscationObjects[j].obfuscate($(mutationsList[i].target));
+		if (appmIsRunning) {
+			for (var i = 0; i < mutationsList.length; i++) {
+				for (var j = 0; j < possibleObfuscationObjects.length; j++) {
+					possibleObfuscationObjects[j].tryObfuscate($(mutationsList[i].target));
 				}
 			}
 		}
@@ -53,15 +60,12 @@ class APPMObfuscation {
 	constructor(definition) {
 		this.definition = definition;
 		this.active = false;
+		this.linkedParent = $.grep(possibleObfuscations, function(o) { return definition.name === o.name; })[0];
 	}
 
 	executeLinkedCallback(targetJqElement) {
-		var parent = this;
-		var target = $.grep(possibleObfuscations, function(o) { return parent.definition.name === o.name; });
-		if (target.length > 0) {
-			for (var i = 0; i < target[0].callbacks.length; i++) {
-				target[0].callbacks[i](targetJqElement);
-			}
+		for (var i = 0; i < this.linkedParent.callbacks.length; i++) {
+			this.linkedParent.callbacks[i](targetJqElement);
 		}
 	}
 
@@ -76,26 +80,25 @@ class APPMObfuscation {
 		}
 	}
 
-	canObfuscate(targetJqElement) {
+	tryObfuscate(targetJqElement) {
 		for (var i = 0; i < this.definition.selectors.length; i++)
 		{
 			var target = this.definition.selectors[i];
-			if (targetJqElement.is(target)) { return true; }
+			if (targetJqElement.is(target)) {
+				this.obfuscate(targetJqElement);
+				return;
+			}
 		}
-		return false;
 	}
 
 	obfuscate(targetJqElement) {
 		if (!this.active && this.definition.enabled === true) {
 			var obfuscation = this;
-			AppmBrowserHelper.getPersistent('appm.running', false, function(isRunning) {
-				if (isRunning === true && obfuscation.active === false) {
-					obfuscation.active = true;
-					console.log("Firing obfuscation callback for " + obfuscation.definition.name)
-					obfuscation.executeLinkedCallback(targetJqElement);
-					obfuscation.active = false;
-				}
-			});
+			if (obfuscation.active === false) {
+				obfuscation.active = true;
+				obfuscation.executeLinkedCallback(targetJqElement);
+				obfuscation.active = false;
+			}
 		}
 	}
 }
