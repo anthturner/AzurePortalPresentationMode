@@ -1,4 +1,3 @@
-const APPM_BACKOFF_TIME = 100; // 0.1s
 var possibleObfuscationObjects = [];
 var bodyObserver;
 
@@ -60,20 +59,30 @@ class APPMObfuscation {
 		var parent = this;
 		var target = $.grep(possibleObfuscations, function(o) { return parent.definition.name === o.name; });
 		if (target.length > 0) {
-			target[0].callback(targetJqElement)
+			for (var i = 0; i < target[0].callbacks.length; i++) {
+				target[0].callbacks[i](targetJqElement);
+			}
 		}
 	}
 
 	obfuscateAll() {
-		var el = $(this.definition.selectorString)
-		if (el !== undefined && el.length > 0 && el[0].isConnected) {
-			this.obfuscate(el);
+		for (var i = 0; i < this.definition.selectors.length; i++)
+		{
+			var el = $(this.definition.selectors[i]);
+			if (el !== undefined && el.length > 0 && el[0].isConnected) {
+				this.obfuscate(el);
+				return;
+			}
 		}
 	}
 
 	canObfuscate(targetJqElement) {
-		var target = this.definition.selectorString;
-		return targetJqElement.is(target);
+		for (var i = 0; i < this.definition.selectors.length; i++)
+		{
+			var target = this.definition.selectors[i];
+			if (targetJqElement.is(target)) { return true; }
+		}
+		return false;
 	}
 
 	obfuscate(targetJqElement) {
@@ -82,7 +91,7 @@ class APPMObfuscation {
 			AppmBrowserHelper.getPersistent('appm.running', false, function(isRunning) {
 				if (isRunning === true && obfuscation.active === false) {
 					obfuscation.active = true;
-					console.log("Firing update for " + obfuscation.definition.name)
+					console.log("Firing obfuscation callback for " + obfuscation.definition.name)
 					obfuscation.executeLinkedCallback(targetJqElement);
 					obfuscation.active = false;
 				}
