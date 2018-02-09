@@ -5,6 +5,7 @@ var bodyObserver;
 function updateRunningState()
 {
 	AppmBrowserHelper.getPersistent('appm.running', false, function(isRunning) {
+		appmIsRunning = isRunning;
 		if (isRunning === true) {
 			console.log("Azure Portal Presentation Mode is hiding sensitive information from your portal instance.");
 			for (var i = 0; i < possibleObfuscationObjects.length; i++) {
@@ -34,12 +35,6 @@ $(document).ready(function () {
 	MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 	updateObfuscations();
-
-	setInterval(function() { 
-		AppmBrowserHelper.getPersistent('appm.running', false, function(isRunning) {
-			appmIsRunning = isRunning;
-		});
-	}, 100);
 
 	bodyObserver = new MutationObserver(function(mutationsList, observer) { 
 		if (appmIsRunning) {
