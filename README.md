@@ -12,8 +12,14 @@ Additional data can be stripped by adding a mutation to appm_obfuscations.js in 
 ```javascript
 {
 	name: "Some Descriptive Name of What This Does",
-	selectorString: "string representing a jquery selector pointing to the element that is watched for changes and subsequently passed into the callback",
-	callback: function(selector) { selector.hide(); } // Perform mutation here, the selector will be the result of selectorString, above
+	selectors: [
+		"string representing a jquery selector pointing to the element that is watched for changes and subsequently passed into the callback",
+		"another string selector that will also activate the callback series"
+	],
+	callbacks: [ 
+		function(selector) { selector.hide(); }, // Perform mutation here, the selector will be the element that was returned from the selector that activated this callback, above
+		function(selector) { } // another callback to be executed
+	]
 },
 ```
 
