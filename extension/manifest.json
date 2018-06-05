@@ -3,7 +3,7 @@
  
   "name": "Azure Portal Presentation Mode",
   "short_name": "Azure Presentation Mode",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Obscures data from the Microsoft Azure Portal, for demos and presentations",
   "author": "Anthony Turner",
   "homepage_url": "http://www.github.com/anthturner/AzurePortalPresentationMode",

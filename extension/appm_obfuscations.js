@@ -13,11 +13,13 @@ var possibleObfuscations = [
     name: "Remove Resource IDs",
     selectors: [
         ".fxc-essentials-label-container label:contains(\"Resource ID\"),label:contains(\"Resource Id\"),label:contains(\"Resource id\")",
-        ".msportalfx-property label:contains(\"Resource ID\"),label:contains(\"Resource Id\"),label:contains(\"Resource id\")"
+        ".msportalfx-property label:contains(\"Resource ID\"),label:contains(\"Resource Id\"),label:contains(\"Resource id\")",
+        ".msportalfx-text-label:contains(\"Resource ID\")"
     ],
     callbacks: [
         function(selector) { selector.closest('.fxc-essentials-item').children('div:not(.fxc-essentials-label-container)').hide(); },
-        function(selector) { selector.closest('.msportalfx-property').children('div:not(.msportalfx-property-label-wrapper)').hide(); }
+        function(selector) { selector.closest('.msportalfx-property').children('div:not(.msportalfx-property-label-wrapper)').hide(); },
+        function(selector) { selector.next().hide(); }
     ]
 },
 {
