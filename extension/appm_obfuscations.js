@@ -1,36 +1,35 @@
 var possibleObfuscations = [
 {
     name: "Hide User Header Tooltip",
-    selectors: [ "div.fxs-avatarmenu *[title]:not([title=\"\"])" ],
-    callbacks: [ function(selector) { $(selector).hover(function(){ $(selector).removeAttr("title"); }); } ]
+    selectors: [{
+        selector: "div.fxs-avatarmenu div[title]:not([title=\"\"])",
+        callback: function(selector) { $(selector).hover(function(){ $(selector).removeAttr("title"); }); }
+    }]
 },
 {
     name: "Hide Username",
-    selectors: [ "div.fxs-avatarmenu-username" ],
-    callbacks: [ function(selector) { selector.text(""); } ]
+    selectors: [{
+        selector: "div.fxs-avatarmenu-username",
+        callback: function(selector) { selector.text(""); }
+    }]
 },
 {
     name: "Remove Resource IDs",
-    selectors: [
-        ".fxc-essentials-label-container label:contains(\"Resource ID\"),label:contains(\"Resource Id\"),label:contains(\"Resource id\")",
-        ".msportalfx-property label:contains(\"Resource ID\"),label:contains(\"Resource Id\"),label:contains(\"Resource id\")",
-        ".msportalfx-text-label:contains(\"Resource ID\")"
-    ],
-    callbacks: [
-        function(selector) { selector.closest('.fxc-essentials-item').children('div:not(.fxc-essentials-label-container)').hide(); },
-        function(selector) { selector.closest('.msportalfx-property').children('div:not(.msportalfx-property-label-wrapper)').hide(); },
-        function(selector) { selector.next().hide(); }
-    ]
+    selectors: [{
+        // Handles resource ID for Azure Disks
+        selector: "div.msportalfx-text-label:contains('Resource ID')",
+        callback: function(selector) { selector.next().hide(); }
+    }],
+    labels: [{
+        label: "Resource ID",
+        callback: function(selector) { selector.hide(); }
+    }]
 },
 {
     name: "Remove Subscription IDs",
-    selectors: [
-        ".fxc-essentials-label-container label:contains(\"Subscription ID\"),label:contains(\"Subscription Id\"),label:contains(\"Subscription id\")",
-        ".msportalfx-property label:contains(\"Subscription ID\"),label:contains(\"Subscription Id\"),label:contains(\"Subscription id\")"
-    ],
-    callbacks: [
-        function(selector) { selector.closest('.fxc-essentials-item').children('div:not(.fxc-essentials-label-container)').hide(); },
-        function(selector) { selector.closest('.msportalfx-property').children('div:not(.msportalfx-property-label-wrapper)').hide(); }
-    ]
+    labels: [{
+        label: "Subscription ID",
+        callback: function(selector) { selector.hide(); }
+    }]
 }
 ];

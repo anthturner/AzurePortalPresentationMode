@@ -11,7 +11,8 @@
  
   "content_scripts": [{
     "js": ["jquery-3.1.1.slim.min.js", "messaging.js", "appm_obfuscations.js", "content.js"],
-    "matches": ["https://portal.azure.com/*","https://*.portal.azure.com/*"]
+    "matches": ["https://portal.azure.com/*","https://*.portal.azure.com/*","https://functions.azure.com/*"],
+    "all_frames": true
   }],
   
   "permissions": [ "tabs", "storage", "webNavigation", "https://portal.azure.com/*", "https://*.portal.azure.com/*" ],
