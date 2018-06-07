@@ -58,12 +58,10 @@ class AppmManager {
 		if (idx === -1 && id.length > 0 && label.length > 0) {
             AppmManager.LabelNames.push(label.toUpperCase());
 			AppmManager.Labels.push({id: id, label: label});
-			console.log('added label "'+label+'" with id "'+id+'"');
 		}
 		else if (idx !== -1) {
 			var result = $.grep(AppmManager.Labels, function (l) { if (l.label.toUpperCase() === label.toUpperCase()) { return l; } });
 			result[0].id = id;
-			console.log('updated label "'+label+'" with id "'+id+'"');
 		}
     }
 
